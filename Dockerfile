@@ -35,7 +35,7 @@ RUN apt-get -y update && apt-get -y install \
   emacs-nox\
   python3\
   g++ \
-  git-core \
+  git-core 
   
 # Copy in the files from the current folder (recursively) For our purposes,
 # put them in /cs3505.  This is why the current folder is called the
