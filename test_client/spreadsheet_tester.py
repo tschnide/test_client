@@ -67,7 +67,9 @@ def check_received_spreadsheet_files(response):
 
 def do_hand_shake():
     send_to_server("Dude\n")
+    receive_from_server()
     send_to_server("MegaDude\n")
+    receive_from_server()
 
 
 class Handshake(unittest.TestCase):
@@ -92,10 +94,7 @@ class Handshake(unittest.TestCase):
 
 class CellUpdate(unittest.TestCase):
     connect_to_server()
-    send_to_server("Dude\n")
-    receive_from_server()
-    send_to_server("GigaDude\n")
-    receive_from_server()
+    do_hand_shake()
     request = '{"requestType":"editCell","cellName":"K16","contents":"18"}'
     send_to_server(request)
     response = receive_from_server()
@@ -144,6 +143,7 @@ class Undo(unittest.TestCase):
         request = '{"requestType": "selectCell", "cellName": "K16"}'
         send_to_server(request)
         close_server()
+
 
 if __name__ == "__main__":
     unittest.main()
