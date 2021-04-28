@@ -17,6 +17,10 @@ connection_to_server = socket(AF_INET, SOCK_STREAM)
 
 
 def send_to_server(message):
+    """
+    Sends a message to the serever as a string
+    :param message: Message to send(string)
+    """
     message_in_bytes = bytes(message, "utf-8")
     print("Trying to send this to server:", message)
     connection_to_server.sendall(message_in_bytes)
@@ -27,7 +31,7 @@ def receive_from_server():
     """
     return received data from server as string
     decoded with utf-8
-    :return: data(string
+    :return: response data(string)
     """
     print("Expecting to receive from server:")
     data = connection_to_server.recv(1024)
@@ -66,10 +70,17 @@ def check_received_spreadsheet_files(response):
 
 
 def do_hand_shake():
+    """
+    Helper method to do handshake protocol.
+    Used to reduce duplicate lines.
+    """
     send_to_server("Dude\n")
     receive_from_server()
     send_to_server("MegaDude\n")
     receive_from_server()
+
+
+"""--------------------------------Begin Test Cases----------------------------------------------------------"""
 
 
 class Handshake(unittest.TestCase):
@@ -105,8 +116,7 @@ class CellUpdate(unittest.TestCase):
 class SelectCell(unittest.TestCase):
     def test_cellSelected_continueWithoutCrash(self):
         connect_to_server()
-        send_to_server("Dude\n")
-        send_to_server("MegaDude\n")
+        do_hand_shake()
         request = '{"requestType": "selectCell", "cellName": "K16"}'
         send_to_server(request)
         send_to_server(request)
@@ -114,8 +124,7 @@ class SelectCell(unittest.TestCase):
 
     def test__cellSelectedInvalidCell_continueWithoutCrash(self):
         connect_to_server()
-        send_to_server("Dude\n")
-        send_to_server("MegaDude\n")
+        do_hand_shake()
         request = '{"requestType": "selectCell", "cellName": "!@#%%!@#$!@#$$$$$$"}'
         send_to_server(request)
         request = '{"requestType": "selectCell", "cellName": "K16"}'
@@ -126,8 +135,7 @@ class SelectCell(unittest.TestCase):
 class RequestType(unittest.TestCase):
     def test_cellSelected_continueWithoutCrash(self):
         connect_to_server()
-        send_to_server("Dude\n")
-        send_to_server("MegaDude\n")
+        do_hand_shake()
         request = '{"requestType": "selectCell", "102983)(*^)(*": "K16"}'
         send_to_server(request)
         request = '{"requestType": "selectCell", "cellName": "K16"}'
@@ -138,12 +146,15 @@ class RequestType(unittest.TestCase):
 class Undo(unittest.TestCase):
     def test_sendUndo_continueWithoutCrash(self):
         connect_to_server()
+        do_hand_shake()
         request = '{"requestType": "undo"}'
         send_to_server(request)
         request = '{"requestType": "selectCell", "cellName": "K16"}'
         send_to_server(request)
         close_server()
 
+
+"""--------------------------------End Test Cases----------------------------------------------------------"""
 
 if __name__ == "__main__":
     unittest.main()
